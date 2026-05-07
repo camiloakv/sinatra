@@ -43,9 +43,7 @@ class RecordingEngine:
         max_duration = config.get("max_duration_hours", 2) * 3600
 
         sample_rate = 44100
-        channels = 1
         input_device = None
-        stereo_mix_device = None
 
         def find_device_by_name(name_pattern):
             for i in range(len(sd.query_devices())):
@@ -225,21 +223,6 @@ class RecordingEngine:
                 if verbose >= 1:
                     print("No audio input devices available")
                 return None
-        else:
-            try:
-                default_input = sd.query_devices(kind="input")
-                if isinstance(default_input, dict):
-                    input_device = default_input["index"]
-                    sample_rate = int(default_input["default_samplerate"])
-                else:
-                    input_device = default_input
-            except Exception:
-                devices = sd.query_devices()
-                for dev in devices:
-                    if dev["max_input_channels"] > 0:
-                        input_device = dev["index"]
-                        break
-            actual_channels = 1
 
         if input_device is None:
             if verbose >= 1:
